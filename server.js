@@ -1,10 +1,12 @@
 const express = require('express');
 const app = express();
 const { MongoClient } = require('mongodb');
-let db;
-require('dotenv').config();
-
+require('dotenv').config(); 
+app.use(express.json());
+app.use(express.urlencoded({extended:true}));
 const url = process.env.MONGO_URI;
+let db;
+
 
 new MongoClient(url).connect().then((client) => {
     console.log('db connected');
@@ -17,6 +19,11 @@ new MongoClient(url).connect().then((client) => {
 })
 
 
-app.get('/', (res, req)=>{
-    req.send('hihih')
+
+app.get('/news', ()=>{
+    db.collection('post').insertOne({title : 'DJwj'})
+})
+
+app.post('/add', async (res, req) => {
+   await db.collection('post').insertOne({title : res.body.title, content : res.body.content})
 })
